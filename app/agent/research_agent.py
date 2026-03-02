@@ -132,14 +132,13 @@ async def run_research(
                             "(%d consecutive fails)",
                             failed_searches,
                         )
-                        # Record the failure so LLM adapts
                         record_visit(
                             memory,
                             f"search:{search_query}",
                             text_snippet=(
                                 "Search returned 0 results. "
-                                "Google may be blocking. "
-                                "Try visiting URLs directly."
+                                "Try a shorter/different query "
+                                "or visit URLs directly."
                             ),
                             had_relevant_info=False,
                         )
@@ -148,6 +147,17 @@ async def run_research(
                     logger.warning(
                         "Search failed: %s", result.error
                     )
+
+            # After 3 consecutive search failures,
+            # force agent to try visiting known URLs
+            if failed_searches >= 3 and not pending_urls:
+                logger.info(
+                    "3+ search failures, injecting "
+                    "direct URLs from goals"
+                )
+                _inject_fallback_urls(
+                    goals, pending_urls, memory,
+                )
 
         # --- VISIT ---
         elif action.action_type == ActionType.VISIT:
@@ -376,3 +386,63 @@ def _build_fetch_chain(
         if tool:
             chain.append((name, tool))
     return chain
+
+
+def _inject_fallback_urls(
+    goals, pending_urls: list[str], memory,
+) -> None:
+    """When searches fail, inject plausible URLs based on goals.
+
+    Uses entity names to construct common university URL patterns.
+    """
+    visited = memory.visited_urls()
+    injected = 0
+
+    for hint in goals.search_hints:
+        # Try to extract domain-style keywords from hints
+        words = hint.lower().split()
+        # Look for university-like patterns
+        for word in words:
+            if len(word) > 3:
+                # Common university postgrad URL patterns
+                patterns = [
+                    f"https://www.{word}.edu.hk/pg/",
+                    f"https://www.{word}.edu/admissions/",
+                ]
+                for url in patterns:
+                    if url not in visited and url not in pending_urls:
+                        pending_urls.append(url)
+                        injected += 1
+
+    # For known Hong Kong universities, inject specific URLs
+    entity_text = " ".join(
+        goals.target_entities
+    ).lower()
+    hk_urls = []
+    if "city university" in entity_text or "cityu" in entity_text:
+        hk_urls = [
+            "https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/list",
+            "https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/apply-now",
+            "https://www.cb.cityu.edu.hk/postgrad/",
+        ]
+    elif "hong kong university" in entity_text or "hku" in entity_text:
+        hk_urls = [
+            "https://www.hku.hk/prospective-students/taught-postgraduate.html",
+            "https://admissions.hku.hk/tpg/",
+        ]
+    elif "chinese university" in entity_text or "cuhk" in entity_text:
+        hk_urls = [
+            "https://www.gs.cuhk.edu.hk/admissions/",
+        ]
+    elif "polyu" in entity_text or "polytechnic" in entity_text:
+        hk_urls = [
+            "https://www.polyu.edu.hk/study/pg/",
+        ]
+
+    for url in hk_urls:
+        if url not in visited and url not in pending_urls:
+            pending_urls.append(url)
+            injected += 1
+
+    if injected:
+        logger.info("Injected %d fallback URLs", injected)
