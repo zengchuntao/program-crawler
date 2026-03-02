@@ -1,0 +1,114 @@
+# Column Definitions for results.xlsx
+# DO NOT reorder or rename existing columns — only append.
+
+programs_sheet:
+  name: "Programs"
+  columns:
+    - key: program_id
+      header: "Program ID"
+      width: 15
+    - key: school_name
+      header: "School Name"
+      width: 30
+    - key: program_name
+      header: "Program Name"
+      width: 40
+    - key: degree_level
+      header: "Degree Level"
+      width: 15
+    - key: program_url
+      header: "Program URL"
+      width: 50
+    - key: final_url
+      header: "Final URL"
+      width: 50
+    - key: captured_at
+      header: "Captured At"
+      width: 20
+    - key: status
+      header: "Status"
+      width: 12
+    - key: warnings
+      header: "Warnings"
+      width: 40
+    # --- Extracted Fields ---
+    - key: gpa_requirement
+      header: "GPA Requirement"
+      width: 20
+    - key: language_requirement
+      header: "Language Requirement"
+      width: 30
+    - key: gre_gmat_requirement
+      header: "GRE/GMAT Requirement"
+      width: 25
+    - key: prerequisites
+      header: "Prerequisites"
+      width: 40
+    - key: deadlines
+      header: "Deadlines"
+      width: 30
+    - key: tuition_fees
+      header: "Tuition & Fees"
+      width: 25
+    - key: materials
+      header: "Application Materials"
+      width: 40
+    - key: curriculum_summary
+      header: "Curriculum Summary"
+      width: 50
+    - key: curriculum_links
+      header: "Curriculum Links"
+      width: 50
+    # --- Evidence ID Columns ---
+    - key: gpa_evidence_ids
+      header: "GPA Evidence IDs"
+      width: 25
+    - key: language_evidence_ids
+      header: "Language Evidence IDs"
+      width: 25
+    - key: gre_gmat_evidence_ids
+      header: "GRE/GMAT Evidence IDs"
+      width: 25
+    - key: prerequisites_evidence_ids
+      header: "Prerequisites Evidence IDs"
+      width: 25
+    - key: deadlines_evidence_ids
+      header: "Deadlines Evidence IDs"
+      width: 25
+    - key: tuition_evidence_ids
+      header: "Tuition Evidence IDs"
+      width: 25
+    - key: materials_evidence_ids
+      header: "Materials Evidence IDs"
+      width: 25
+    - key: curriculum_evidence_ids
+      header: "Curriculum Evidence IDs"
+      width: 25
+
+evidence_sheet:
+  name: "Evidence"
+  columns:
+    - key: evidence_id
+      header: "Evidence ID"
+      width: 18
+    - key: program_id
+      header: "Program ID"
+      width: 15
+    - key: field
+      header: "Field"
+      width: 25
+    - key: source_url
+      header: "Source URL"
+      width: 50
+    - key: captured_at
+      header: "Captured At"
+      width: 20
+    - key: screenshot_files
+      header: "Screenshot Files"
+      width: 60
+    - key: screenshot_type
+      header: "Screenshot Type"
+      width: 15
+    - key: notes
+      header: "Notes"
+      width: 40
