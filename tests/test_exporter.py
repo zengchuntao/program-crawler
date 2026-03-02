@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+from app.export.xlsx_exporter import XlsxExporter
 from contracts.models import (
     CrawlStatus,
     EvidenceItem,
@@ -10,7 +11,6 @@ from contracts.models import (
     ProgramRecord,
     ScreenshotType,
 )
-from app.export.xlsx_exporter import XlsxExporter
 
 
 def test_exporter_creates_file(tmp_path: Path):

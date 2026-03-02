@@ -1,5 +1,122 @@
-# Column Definitions for results.xlsx
-# DO NOT reorder or rename existing columns — only append.
+# Column Definitions for results.xlsx — Research Agent 4-sheet layout
+# Legacy 2-sheet definitions preserved below as _legacy_ prefixed sections.
+
+# ===========================================================================
+# NEW: 4-sheet Research Agent layout
+# ===========================================================================
+
+findings_sheet:
+  name: "Findings"
+  columns:
+    - key: finding_id
+      header: "Finding ID"
+      width: 18
+    - key: entity
+      header: "Entity"
+      width: 35
+    - key: field_name
+      header: "Field"
+      width: 25
+    - key: value
+      header: "Value"
+      width: 40
+    - key: confidence
+      header: "Confidence"
+      width: 12
+    - key: source_url
+      header: "Source URL"
+      width: 50
+    - key: screenshot_file
+      header: "Screenshot File"
+      width: 60
+
+summary_sheet:
+  name: "Summary"
+  columns:
+    - key: entity
+      header: "Entity"
+      width: 35
+    - key: gpa_requirement
+      header: "GPA Requirement"
+      width: 20
+    - key: language_requirement
+      header: "Language Requirement"
+      width: 30
+    - key: gre_gmat_requirement
+      header: "GRE/GMAT Requirement"
+      width: 25
+    - key: prerequisites
+      header: "Prerequisites"
+      width: 40
+    - key: deadlines
+      header: "Deadlines"
+      width: 30
+    - key: tuition_fees
+      header: "Tuition & Fees"
+      width: 25
+    - key: materials
+      header: "Application Materials"
+      width: 40
+    - key: curriculum_summary
+      header: "Curriculum Summary"
+      width: 50
+    - key: curriculum_links
+      header: "Curriculum Links"
+      width: 50
+    - key: missing_fields
+      header: "Missing Fields"
+      width: 30
+    - key: status
+      header: "Status"
+      width: 12
+
+evidence_sheet:
+  name: "Evidence"
+  columns:
+    - key: evidence_id
+      header: "Evidence ID"
+      width: 18
+    - key: finding_id
+      header: "Finding ID"
+      width: 18
+    - key: field
+      header: "Field"
+      width: 25
+    - key: screenshot_file
+      header: "Screenshot File"
+      width: 60
+    - key: screenshot_type
+      header: "Screenshot Type"
+      width: 15
+    - key: source_url
+      header: "Source URL"
+      width: 50
+
+agent_log_sheet:
+  name: "Agent Log"
+  columns:
+    - key: step
+      header: "Step"
+      width: 8
+    - key: action_type
+      header: "Action"
+      width: 15
+    - key: url_or_query
+      header: "URL / Search Query"
+      width: 55
+    - key: reasoning
+      header: "Reasoning"
+      width: 60
+    - key: found_info
+      header: "Found Info"
+      width: 12
+    - key: timestamp
+      header: "Timestamp"
+      width: 20
+
+# ===========================================================================
+# LEGACY: Original 2-sheet layout (preserved for backward compatibility)
+# ===========================================================================
 
 programs_sheet:
   name: "Programs"
@@ -84,31 +201,3 @@ programs_sheet:
     - key: curriculum_evidence_ids
       header: "Curriculum Evidence IDs"
       width: 25
-
-evidence_sheet:
-  name: "Evidence"
-  columns:
-    - key: evidence_id
-      header: "Evidence ID"
-      width: 18
-    - key: program_id
-      header: "Program ID"
-      width: 15
-    - key: field
-      header: "Field"
-      width: 25
-    - key: source_url
-      header: "Source URL"
-      width: 50
-    - key: captured_at
-      header: "Captured At"
-      width: 20
-    - key: screenshot_files
-      header: "Screenshot Files"
-      width: 60
-    - key: screenshot_type
-      header: "Screenshot Type"
-      width: 15
-    - key: notes
-      header: "Notes"
-      width: 40

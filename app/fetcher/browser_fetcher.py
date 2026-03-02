@@ -64,3 +64,54 @@ async def fetch_browser(
             raw_path=str(raw_html_path) if raw_html_path else None,
             screenshot_path=str(screenshot_path) if screenshot_path else None,
         )
+
+
+async def fetch_browser_with_handle(
+    plan: FetchPlan,
+    program_id: str,
+    screenshot_path: Optional[str | Path] = None,
+    raw_html_path: Optional[str | Path] = None,
+) -> Document:
+    """
+    Fetch a URL via Playwright and return a Document.
+    Similar to fetch_browser but used by the agent — handles its own lifecycle.
+    Optionally captures screenshot and raw HTML.
+    """
+    from playwright.async_api import async_playwright
+
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch(headless=True)
+        page = await browser.new_page(viewport={"width": 1280, "height": 900})
+
+        await page.goto(plan.url, wait_until="domcontentloaded", timeout=plan.timeout_ms)
+        # Wait a bit for dynamic content
+        await page.wait_for_timeout(1500)
+
+        html = await page.content()
+        text = await page.evaluate("() => document.body.innerText")
+        title = await page.title()
+        final_url = page.url
+
+        # Save full-page screenshot
+        if screenshot_path:
+            Path(screenshot_path).parent.mkdir(parents=True, exist_ok=True)
+            await page.screenshot(path=str(screenshot_path), full_page=True)
+
+        # Save raw HTML
+        if raw_html_path:
+            Path(raw_html_path).parent.mkdir(parents=True, exist_ok=True)
+            Path(raw_html_path).write_text(html, encoding="utf-8")
+
+        await browser.close()
+
+        return Document(
+            program_id=program_id,
+            source_url=plan.url,
+            final_url=final_url,
+            fetch_mode=FetchMode.BROWSER,
+            html=html,
+            text=text,
+            raw_path=str(raw_html_path) if raw_html_path else None,
+            screenshot_path=str(screenshot_path) if screenshot_path else None,
+            metadata={"title": title},
+        )

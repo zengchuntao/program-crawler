@@ -5,6 +5,13 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
+from app.evidence.capture import capture_full_page
+from app.extractor.llm_extractor import extract_with_llm
+from app.extractor.rule_extractors import extract_deadline_dates, extract_ielts_toefl
+from app.fetcher.browser_fetcher import fetch_browser
+from app.fetcher.http_fetcher import fetch_http
+from app.util.helpers import evidence_dir, raw_dir
+from app.validate.validator import validate_fields
 from contracts.models import (
     CrawlStatus,
     Document,
@@ -15,13 +22,6 @@ from contracts.models import (
     ProgramInput,
     ProgramRecord,
 )
-from app.evidence.capture import capture_full_page
-from app.extractor.llm_extractor import extract_with_llm
-from app.extractor.rule_extractors import extract_deadline_dates, extract_ielts_toefl
-from app.fetcher.browser_fetcher import fetch_browser
-from app.fetcher.http_fetcher import fetch_http
-from app.util.helpers import evidence_dir, raw_dir
-from app.validate.validator import validate_fields
 
 logger = logging.getLogger("crawler.plugin.generic")
 

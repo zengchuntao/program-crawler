@@ -1,9 +1,12 @@
 """
-Frozen Data Contracts for Program Crawler
-==========================================
+Frozen Data Contracts for Program Crawler / Research Agent
+==========================================================
 These models are the single source of truth for all modules.
 DO NOT modify field names or remove fields — only append new optional fields.
 All agents import from here to stay aligned.
+
+Legacy models (ProgramInput, FetchPlan, Document, etc.) are preserved.
+New agent-oriented models are appended below.
 """
 
 from __future__ import annotations
@@ -15,7 +18,6 @@ from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, Field
-
 
 # ---------------------------------------------------------------------------
 # Enums
@@ -187,3 +189,166 @@ class RunLogEntry(BaseModel):
     duration_s: float
     warnings: list[str] = Field(default_factory=list)
     error: Optional[str] = None
+
+
+# ===========================================================================
+# New Agent-Oriented Models (Research Agent architecture)
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# ID generation for new models
+# ---------------------------------------------------------------------------
+
+def generate_finding_id() -> str:
+    """Globally unique finding ID."""
+    return f"FIND-{uuid.uuid4().hex[:8]}"
+
+
+# ---------------------------------------------------------------------------
+# Enums for Agent
+# ---------------------------------------------------------------------------
+
+class ActionType(str, Enum):
+    SEARCH = "search"
+    VISIT = "visit"
+    DONE = "done"
+    GIVE_UP = "give_up"
+
+
+class ResearchStatus(str, Enum):
+    COMPLETE = "complete"
+    PARTIAL = "partial"
+    FAILED = "failed"
+
+
+# ---------------------------------------------------------------------------
+# Research Query (user input)
+# ---------------------------------------------------------------------------
+
+class ResearchQuery(BaseModel):
+    """Natural language research request from user."""
+    raw_query: str
+    max_steps: int = 20
+
+
+# ---------------------------------------------------------------------------
+# Research Goal (LLM-parsed from query)
+# ---------------------------------------------------------------------------
+
+class ResearchGoal(BaseModel):
+    """Structured goals parsed from the user's query by the Planner LLM."""
+    target_entities: list[str] = Field(
+        default_factory=list,
+        description="Entities to research, e.g. ['MIT CS Master\\'s', 'Stanford CS Master\\'s']",
+    )
+    fields_requested: list[str] = Field(
+        default_factory=list,
+        description="Field names to look for, e.g. ['gpa_requirement', 'language_requirement']",
+    )
+    search_hints: list[str] = Field(
+        default_factory=list,
+        description="Suggested search queries to start with",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Agent Action (what the agent decides to do next)
+# ---------------------------------------------------------------------------
+
+class AgentAction(BaseModel):
+    """A single action decided by the Action Picker LLM."""
+    action_type: ActionType
+    url: Optional[str] = None
+    search_query: Optional[str] = None
+    reasoning: str = ""
+
+
+# ---------------------------------------------------------------------------
+# Finding (one confirmed piece of information)
+# ---------------------------------------------------------------------------
+
+class Finding(BaseModel):
+    """One confirmed data finding with evidence."""
+    finding_id: str = Field(default_factory=generate_finding_id)
+    entity: str
+    field_name: str
+    value: str
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    source_url: str
+    evidence_id: Optional[str] = None
+    screenshot_file: Optional[str] = None
+
+
+# ---------------------------------------------------------------------------
+# Page Visit (record of visiting a page)
+# ---------------------------------------------------------------------------
+
+class PageVisit(BaseModel):
+    """Record of a single page visit during research."""
+    url: str
+    title: Optional[str] = None
+    text_snippet: Optional[str] = None
+    had_relevant_info: bool = False
+    links_extracted: list[str] = Field(default_factory=list)
+    visited_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+
+# ---------------------------------------------------------------------------
+# Agent Memory (working memory across the loop)
+# ---------------------------------------------------------------------------
+
+class AgentMemory(BaseModel):
+    """Working memory for the research agent loop."""
+    query: str
+    goals: Optional[ResearchGoal] = None
+    pages_visited: list[PageVisit] = Field(default_factory=list)
+    findings: list[Finding] = Field(default_factory=list)
+    step_count: int = 0
+    max_steps: int = 20
+
+    def fields_still_needed(self) -> list[str]:
+        """Return field names not yet found for any entity."""
+        if not self.goals:
+            return []
+        found = {f.field_name for f in self.findings}
+        return [f for f in self.goals.fields_requested if f not in found]
+
+    def visited_urls(self) -> set[str]:
+        """Return set of all visited URLs."""
+        return {p.url for p in self.pages_visited}
+
+    def has_budget(self) -> bool:
+        """Check if the agent has steps remaining."""
+        return self.step_count < self.max_steps
+
+
+# ---------------------------------------------------------------------------
+# Agent Log Step (for debugging sheet)
+# ---------------------------------------------------------------------------
+
+class AgentLogStep(BaseModel):
+    """One step in the agent's execution log (for Excel Agent Log sheet)."""
+    step: int
+    action_type: str
+    url_or_query: Optional[str] = None
+    reasoning: str = ""
+    found_info: bool = False
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+
+# ---------------------------------------------------------------------------
+# Research Result (final output)
+# ---------------------------------------------------------------------------
+
+class ResearchResult(BaseModel):
+    """Complete output of a research agent run."""
+    query: str
+    goals: Optional[ResearchGoal] = None
+    findings: list[Finding] = Field(default_factory=list)
+    missing_fields: list[str] = Field(default_factory=list)
+    evidence_items: list[EvidenceItem] = Field(default_factory=list)
+    agent_log: list[AgentLogStep] = Field(default_factory=list)
+    status: ResearchStatus = ResearchStatus.COMPLETE
+    duration_s: float = 0.0
+    total_steps: int = 0
+    pages_visited: int = 0

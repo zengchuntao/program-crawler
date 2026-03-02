@@ -1,16 +1,21 @@
 [project]
 name = "program-crawler"
-version = "0.1.0"
-description = "Program information crawler with evidence capture"
+version = "0.2.0"
+description = "AI-driven research agent for academic program information"
 requires-python = ">=3.11"
 dependencies = [
     "pydantic>=2.5,<3",
     "playwright>=1.40",
+    "playwright-stealth>=2.0",
     "openpyxl>=3.1",
     "httpx>=0.25",
     "pyyaml>=6.0",
+    "google-genai>=1.0",
+    # Legacy (OpenAI-compatible) — kept for batch mode
     "openai>=1.10",
     "tiktoken>=0.5",
+    # Optional tools
+    "pyautogui>=0.9",
 ]
 
 [project.optional-dependencies]
@@ -21,6 +26,7 @@ dev = [
 ]
 
 [project.scripts]
+research = "app.runner:main"
 crawl = "app.runner:main"
 
 [tool.ruff]

@@ -1,7 +1,7 @@
 """Tests for the validator."""
 
-from contracts.models import ExtractedFields
 from app.validate.validator import validate_fields
+from contracts.models import ExtractedFields
 
 
 def test_valid_fields_no_warnings():

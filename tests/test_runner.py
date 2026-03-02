@@ -4,7 +4,6 @@ from pathlib import Path
 
 from app.runner import load_inputs
 
-
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
