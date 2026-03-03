@@ -1,0 +1,246 @@
+# University Registry — known URL patterns for direct access
+# Used by the agent when search engines fail or for faster access.
+# Format: region → university → entry_points (list of useful URLs)
+
+hong_kong:
+  cityu:
+    aliases: ["City University of Hong Kong", "CityU", "香港城市大学"]
+    entry_points:
+      - url: https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/list
+        label: Program list (all taught postgraduate)
+      - url: https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/apply-now
+        label: Application deadlines
+      - url: https://www.cb.cityu.edu.hk/postgrad/
+        label: College of Business postgraduate
+      - url: https://mba.cb.cityu.edu.hk/admissions/online-application
+        label: MBA admissions
+      - url: https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/faq
+        label: FAQ
+    notes: Department sites (cb.cityu.edu.hk) work better than main portal for HTTP.
+
+  hku:
+    aliases: ["University of Hong Kong", "HKU", "香港大学", "港大"]
+    entry_points:
+      - url: https://admissions.hku.hk/tpg/programmes/
+        label: TPG programmes and deadlines
+      - url: https://www.gradsch.hku.hk/
+        label: Graduate school portal
+      - url: https://www.hku.hk/prospective-students/taught-postgraduate.html
+        label: Prospective TPG students
+    notes: Centralized admissions portal; department pages have less detail.
+
+  cuhk:
+    aliases: ["Chinese University of Hong Kong", "CUHK", "香港中文大学", "中大"]
+    entry_points:
+      - url: https://www.gs.cuhk.edu.hk/admissions/
+        label: Graduate admissions
+      - url: https://www.gs.cuhk.edu.hk/admissions/admissions/application-deadline
+        label: Application deadlines
+      - url: https://grad.bschool.cuhk.edu.hk/admissions/
+        label: Business school graduate admissions
+    notes: Separate graduate school and business school portals.
+
+  polyu:
+    aliases: ["Hong Kong Polytechnic University", "PolyU", "香港理工大学", "理工"]
+    entry_points:
+      - url: https://www.polyu.edu.hk/study/pg/taught-postgraduate/
+        label: Taught postgraduate
+      - url: https://www.polyu.edu.hk/study/pg/
+        label: PG study portal
+    notes: Static site, HTTP fetch works well.
+
+  hkust:
+    aliases: ["Hong Kong University of Science and Technology", "HKUST", "香港科技大学", "科大"]
+    entry_points:
+      - url: https://pg.ust.hk/prospective-students/programs
+        label: Prospective student programs
+      - url: https://pg.ust.hk/
+        label: Postgraduate portal
+      - url: https://mba.ust.hk/
+        label: MBA program
+    notes: Some pages are SPA-based, may need browser fallback.
+
+  hkbu:
+    aliases: ["Hong Kong Baptist University", "HKBU", "香港浸会大学", "浸大"]
+    entry_points:
+      - url: https://gs.hkbu.edu.hk/admission/
+        label: Graduate school admission
+    notes: Relatively small graduate program listing.
+
+  lingnan:
+    aliases: ["Lingnan University", "岭南大学"]
+    entry_points:
+      - url: https://www.ln.edu.hk/admissions/postgraduate/
+        label: Postgraduate admissions
+
+  eduhk:
+    aliases: ["Education University of Hong Kong", "EdUHK", "香港教育大学"]
+    entry_points:
+      - url: https://www.apply.eduhk.hk/pg/
+        label: Postgraduate admissions
+
+united_states:
+  mit:
+    aliases: ["MIT", "Massachusetts Institute of Technology", "麻省理工"]
+    entry_points:
+      - url: https://www.eecs.mit.edu/academics/graduate-programs/admission-process/
+        label: EECS graduate admission
+      - url: https://www.eecs.mit.edu/academics/graduate-programs/admission-process/graduate-admissions-faqs/
+        label: EECS admissions FAQ
+      - url: https://oge.mit.edu/programs/
+        label: All graduate programs
+      - url: https://gradapply.mit.edu/eecs
+        label: EECS application portal
+    notes: Does NOT publish minimum GPA. Holistic admission.
+
+  stanford:
+    aliases: ["Stanford", "Stanford University", "斯坦福"]
+    entry_points:
+      - url: https://gradadmissions.stanford.edu/
+        label: Graduate admissions portal
+      - url: https://gradadmissions.stanford.edu/applying
+        label: How to apply
+
+  berkeley:
+    aliases: ["UC Berkeley", "Berkeley", "加州大学伯克利"]
+    entry_points:
+      - url: https://grad.berkeley.edu/admissions/
+        label: Graduate admissions
+      - url: https://eecs.berkeley.edu/academics/graduate/
+        label: EECS graduate programs
+
+  cmu:
+    aliases: ["CMU", "Carnegie Mellon", "卡内基梅隆"]
+    entry_points:
+      - url: https://www.cs.cmu.edu/academics/graduate-admissions
+        label: SCS graduate admissions
+    notes: Many sub-programs under CS, each with own page.
+
+  columbia:
+    aliases: ["Columbia", "Columbia University", "哥伦比亚大学"]
+    entry_points:
+      - url: https://www.gsas.columbia.edu/content/admissions
+        label: GSAS admissions
+
+  harvard:
+    aliases: ["Harvard", "Harvard University", "哈佛"]
+    entry_points:
+      - url: https://gsas.harvard.edu/admissions
+        label: Graduate admissions
+
+united_kingdom:
+  oxford:
+    aliases: ["Oxford", "University of Oxford", "牛津"]
+    entry_points:
+      - url: https://www.ox.ac.uk/admissions/graduate/courses/
+        label: Graduate course finder
+    notes: College-specific requirements in addition to department.
+
+  cambridge:
+    aliases: ["Cambridge", "University of Cambridge", "剑桥"]
+    entry_points:
+      - url: https://www.graduate.study.cam.ac.uk/courses/
+        label: Graduate course directory
+
+  imperial:
+    aliases: ["Imperial", "Imperial College London", "帝国理工"]
+    entry_points:
+      - url: https://www.imperial.ac.uk/study/postgraduate/
+        label: Postgraduate study
+    notes: Well-structured site, HTTP works well.
+
+  ucl:
+    aliases: ["UCL", "University College London"]
+    entry_points:
+      - url: https://www.ucl.ac.uk/prospective-students/graduate/
+        label: Graduate prospective students
+
+  lse:
+    aliases: ["LSE", "London School of Economics", "伦敦政经"]
+    entry_points:
+      - url: https://www.lse.ac.uk/study-at-lse/Graduate/
+        label: Graduate study
+
+  edinburgh:
+    aliases: ["Edinburgh", "University of Edinburgh", "爱丁堡"]
+    entry_points:
+      - url: https://www.ed.ac.uk/studying/postgraduate/
+        label: Postgraduate study
+
+australia:
+  melbourne:
+    aliases: ["University of Melbourne", "Melbourne", "墨尔本大学"]
+    entry_points:
+      - url: https://study.unimelb.edu.au/find/courses/graduate/
+        label: Graduate course finder
+
+  sydney:
+    aliases: ["University of Sydney", "Sydney", "悉尼大学"]
+    entry_points:
+      - url: https://www.sydney.edu.au/courses/search.html?search-type=course&course-level=postgraduate
+        label: Postgraduate courses
+
+  unsw:
+    aliases: ["UNSW", "University of New South Wales", "新南威尔士"]
+    entry_points:
+      - url: https://www.unsw.edu.au/study/postgraduate
+        label: Postgraduate study
+
+  anu:
+    aliases: ["ANU", "Australian National University", "澳国立"]
+    entry_points:
+      - url: https://www.anu.edu.au/study/apply/postgraduate-and-honours
+        label: PG applications
+
+canada:
+  toronto:
+    aliases: ["University of Toronto", "UofT", "多伦多大学"]
+    entry_points:
+      - url: https://www.sgs.utoronto.ca/programs/
+        label: SGS program listing
+
+  ubc:
+    aliases: ["UBC", "University of British Columbia", "英属哥伦比亚"]
+    entry_points:
+      - url: https://www.grad.ubc.ca/prospective-students/graduate-degree-programs
+        label: Graduate degree programs
+
+  mcgill:
+    aliases: ["McGill", "McGill University", "麦吉尔"]
+    entry_points:
+      - url: https://www.mcgill.ca/gradapplicants/
+        label: Graduate applicants portal
+
+singapore:
+  nus:
+    aliases: ["NUS", "National University of Singapore", "新加坡国立"]
+    entry_points:
+      - url: https://nusgs.nus.edu.sg/programmes/
+        label: Graduate programmes
+      - url: https://www.comp.nus.edu.sg/programmes/pg/
+        label: Computing postgraduate
+
+  ntu:
+    aliases: ["NTU", "Nanyang Technological University", "南洋理工"]
+    entry_points:
+      - url: https://www.ntu.edu.sg/admissions/graduate/
+        label: Graduate admissions
+
+europe:
+  eth:
+    aliases: ["ETH", "ETH Zurich", "苏黎世联邦理工"]
+    entry_points:
+      - url: https://ethz.ch/en/studies/master.html
+        label: Master programmes
+
+  tum:
+    aliases: ["TUM", "Technical University of Munich", "慕尼黑工大"]
+    entry_points:
+      - url: https://www.tum.de/en/studies/application/
+        label: Application info
+
+  delft:
+    aliases: ["TU Delft", "Delft University of Technology", "代尔夫特"]
+    entry_points:
+      - url: https://www.tudelft.nl/en/education/programmes/masters/
+        label: Master programmes

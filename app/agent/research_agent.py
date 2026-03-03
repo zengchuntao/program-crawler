@@ -72,6 +72,14 @@ async def run_research(
     pending_urls: list[str] = []
     failed_searches: int = 0
 
+    # Pre-seed with known URLs from university registry
+    _inject_fallback_urls(goals, pending_urls, memory)
+    if pending_urls:
+        logger.info(
+            "Pre-seeded %d URLs from registry",
+            len(pending_urls),
+        )
+
     # --- Agent Loop ---
     while memory.has_budget():
         memory.step_count += 1
@@ -391,58 +399,28 @@ def _build_fetch_chain(
 def _inject_fallback_urls(
     goals, pending_urls: list[str], memory,
 ) -> None:
-    """When searches fail, inject plausible URLs based on goals.
+    """When searches fail, inject known URLs from university registry.
 
-    Uses entity names to construct common university URL patterns.
+    Matches entity names against skills/university_registry.yaml
+    to find relevant entry-point URLs.
     """
+    from app.skills_loader import get_entry_urls
+
     visited = memory.visited_urls()
+
+    # Build a combined text from entities + hints for matching
+    match_text = " ".join(
+        goals.target_entities + goals.search_hints
+    )
+    known_urls = get_entry_urls(match_text)
+
     injected = 0
-
-    for hint in goals.search_hints:
-        # Try to extract domain-style keywords from hints
-        words = hint.lower().split()
-        # Look for university-like patterns
-        for word in words:
-            if len(word) > 3:
-                # Common university postgrad URL patterns
-                patterns = [
-                    f"https://www.{word}.edu.hk/pg/",
-                    f"https://www.{word}.edu/admissions/",
-                ]
-                for url in patterns:
-                    if url not in visited and url not in pending_urls:
-                        pending_urls.append(url)
-                        injected += 1
-
-    # For known Hong Kong universities, inject specific URLs
-    entity_text = " ".join(
-        goals.target_entities
-    ).lower()
-    hk_urls = []
-    if "city university" in entity_text or "cityu" in entity_text:
-        hk_urls = [
-            "https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/list",
-            "https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/apply-now",
-            "https://www.cb.cityu.edu.hk/postgrad/",
-        ]
-    elif "hong kong university" in entity_text or "hku" in entity_text:
-        hk_urls = [
-            "https://www.hku.hk/prospective-students/taught-postgraduate.html",
-            "https://admissions.hku.hk/tpg/",
-        ]
-    elif "chinese university" in entity_text or "cuhk" in entity_text:
-        hk_urls = [
-            "https://www.gs.cuhk.edu.hk/admissions/",
-        ]
-    elif "polyu" in entity_text or "polytechnic" in entity_text:
-        hk_urls = [
-            "https://www.polyu.edu.hk/study/pg/",
-        ]
-
-    for url in hk_urls:
+    for url in known_urls:
         if url not in visited and url not in pending_urls:
             pending_urls.append(url)
             injected += 1
 
     if injected:
-        logger.info("Injected %d fallback URLs", injected)
+        logger.info(
+            "Injected %d fallback URLs from registry", injected
+        )

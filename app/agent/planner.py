@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 
 from app.llm.base import BaseLLM
+from app.skills_loader import get_skill_context_for_planner
 from contracts.models import ResearchGoal, ResearchQuery
 
 logger = logging.getLogger("crawler.agent.planner")
@@ -19,11 +20,14 @@ Return ONLY valid JSON with these fields:
 - fields_requested: list of field name strings to look for. Valid field names:
   gpa_requirement, language_requirement, gre_gmat_requirement, prerequisites,
   deadlines, tuition_fees, materials, curriculum_summary, curriculum_links
-- search_hints: list of suggested Google search queries to start the research
+- search_hints: list of suggested search queries to start the research. \
+  Keep each hint SHORT (5-8 words max). Avoid long queries.
 
 If the user's query is vague, infer the most likely intent.
 If multiple entities are mentioned, list them all.
 If no specific fields are mentioned, include the most relevant ones.
+
+{university_context}
 """
 
 
@@ -35,9 +39,15 @@ async def plan_research(
     Call LLM to parse a natural language query into structured ResearchGoal.
     Never raises — returns a best-effort goal on failure.
     """
+    # Inject university knowledge if available
+    uni_context = get_skill_context_for_planner(query.raw_query)
+    system = PLANNER_SYSTEM_PROMPT.replace(
+        "{university_context}", uni_context
+    )
+
     try:
         data = await llm.chat_json(
-            system_prompt=PLANNER_SYSTEM_PROMPT,
+            system_prompt=system,
             user_message=query.raw_query,
         )
         # Handle Gemini returning list instead of dict
