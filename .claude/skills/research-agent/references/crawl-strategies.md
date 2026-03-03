@@ -5,29 +5,28 @@
 - **Short queries**: 5-8 words max. DuckDuckGo drops results for long queries.
 - **English first**: most university pages have English versions. Try local
   language only if English search returns nothing.
-- **HTTP first**: most university pages are static HTML. Only use Playwright
-  when HTTP returns thin content or a site is confirmed SPA.
+- **HTTPs first**: most university pages are static HTML. Only use Playwright
+  when HTTP returns thin content or the site needs JS rendering.
 - **One screenshot per URL**: never open a new browser instance for each finding.
 
 ## Search Engine Fallback Chain
 
 ```
-DuckDuckGo → (CAPTCHA detected?) → Brave Search → (still 0?) → registry URLs
+google→ DuckDuckGo → (CAPTCHA detected?) → Brave Search → (still 0?) → registry URLs
 ```
 
-DuckDuckGo triggers CAPTCHA after ~5-10 rapid requests. Detect by checking
+Google first, then DuckDuckGo as fallback. DuckDuckGo triggers CAPTCHA after ~5-10 rapid requests. Detect by checking
 for "squares containing a duck" or "error-lite@duckduckgo.com" in response.
 
-Google is unusable via plain HTTP (returns JS shell). Do not attempt.
+Google is unusable via plain HTTP (returns JS shell). Need Playwright or SerpAPI.
 
 ## Region: Hong Kong
 
 - Academic year: September intake, applications ~Nov-Apr
 - Tuition in **HKD**
 - Language: TOEFL iBT / IELTS / CET-6 commonly accepted
-- Many main portals (e.g. `www.cityu.edu.hk/pg/`) use **Incapsula/Imperva WAF**
-  that blocks both HTTP and headless browsers. Use department subdomains instead.
-- Department subdomains (e.g. `cb.cityu.edu.hk`, `mba.cb.cityu.edu.hk`) usually
+- there is direct url
+- Department subdomains (e.g.) usually
   lack WAF and work fine with HTTP or Playwright.
 
 ## Region: United States

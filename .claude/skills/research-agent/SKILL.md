@@ -46,7 +46,7 @@ Core rules:
 - Extract **only concrete facts**: specific dates, test scores, dollar amounts,
   document lists, credit counts.
 - **Reject** marketing slogans, taglines, and vague descriptions.
-- If a page lists program names without details, extract **links to detail pages**
+- If a page lists programs extract **links to detail pages**
   instead of creating low-value findings.
 - A field is "done" only when found for a majority of target entities, not just one.
 

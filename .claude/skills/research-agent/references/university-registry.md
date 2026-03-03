@@ -9,14 +9,15 @@ Format: `- [Label](URL)` with optional notes.
 ## Hong Kong
 
 ### CityU (City University of Hong Kong / 香港城市大学)
+- [Programme list (WAF protected, needs browser)](https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/list)
 - [College of Business postgraduate](https://www.cb.cityu.edu.hk/postgrad/)
-- [Application info](https://www.cb.cityu.edu.hk/postgrad/?category=Apply)
-- [Programme list](https://www.cb.cityu.edu.hk/postgrad/?category=Programme)
+- [CB Application info](https://www.cb.cityu.edu.hk/postgrad/?category=Apply)
+- [CB Programme list](https://www.cb.cityu.edu.hk/postgrad/?category=Programme)
 - [MBA admissions](https://mba.cb.cityu.edu.hk/admissions/online-application)
-- [MBA tuition](https://mba.cb.cityu.edu.hk/en/full-time-mba/admissions-requirements-tuition-and-scholarships)
+- [MBA tuition & requirements](https://mba.cb.cityu.edu.hk/en/full-time-mba/admissions-requirements-tuition-and-scholarships)
 
-> WARNING: Main site `www.cityu.edu.hk/pg/` uses Incapsula WAF. Use department
-> subdomains (cb.cityu.edu.hk, mba.cb.cityu.edu.hk) instead.
+> WARNING: Main site `www.cityu.edu.hk/pg/` uses Incapsula hCaptcha.
+> Use department subdomains (cb.cityu.edu.hk, mba.cb.cityu.edu.hk) instead.
 
 ### HKU (University of Hong Kong / 香港大学)
 - [TPG programmes](https://admissions.hku.hk/tpg/programmes/)
