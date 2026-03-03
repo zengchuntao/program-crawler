@@ -32,7 +32,7 @@ class StealthBrowserTool(BaseTool):
 
         try:
             from playwright.async_api import async_playwright
-            from playwright_stealth import stealth_async
+            from playwright_stealth import Stealth
 
             async with async_playwright() as pw:
                 browser = await pw.chromium.launch(
@@ -51,29 +51,28 @@ class StealthBrowserTool(BaseTool):
                     ),
                 )
                 page = await context.new_page()
-                await stealth_async(page)
-
-                await page.goto(
-                    url,
-                    wait_until="domcontentloaded",
-                    timeout=timeout_ms,
-                )
-                await page.wait_for_timeout(2000)
-
-                html = await page.content()
-                text = await page.evaluate(
-                    "() => document.body.innerText"
-                )
-                title = await page.title()
-                final_url = page.url
-
-                if screenshot_path:
-                    Path(screenshot_path).parent.mkdir(
-                        parents=True, exist_ok=True
+                async with Stealth(page):
+                    await page.goto(
+                        url,
+                        wait_until="domcontentloaded",
+                        timeout=timeout_ms,
                     )
-                    await page.screenshot(
-                        path=screenshot_path, full_page=True
+                    await page.wait_for_timeout(2000)
+
+                    html = await page.content()
+                    text = await page.evaluate(
+                        "() => document.body.innerText"
                     )
+                    title = await page.title()
+                    final_url = page.url
+
+                    if screenshot_path:
+                        Path(screenshot_path).parent.mkdir(
+                            parents=True, exist_ok=True
+                        )
+                        await page.screenshot(
+                            path=screenshot_path, full_page=True
+                        )
 
                 await browser.close()
 

@@ -37,14 +37,14 @@ When visiting a page, extract data in this priority order:
 ### University-Specific Strategies
 
 #### City University of Hong Kong (CityU / 香港城市大学)
-- **Main portal**: `www.cityu.edu.hk/pg/`
-- **Program list**: `www.cityu.edu.hk/pg/taught-postgraduate-programmes/list`
-- **Apply now / deadlines**: `www.cityu.edu.hk/pg/taught-postgraduate-programmes/apply-now`
-- **College of Business**: `www.cb.cityu.edu.hk/postgrad/`
-- **MBA**: `mba.cb.cityu.edu.hk/`
-- **FAQ**: `www.cityu.edu.hk/pg/taught-postgraduate-programmes/faq`
-- **Note**: Main site may return thin HTML; department sites (cb.cityu.edu.hk) work better with HTTP.
-- **Search tips**: Use "CityU" or "City University Hong Kong" — the full official name is long.
+- **WARNING**: Main site `www.cityu.edu.hk/pg/` uses **Incapsula WAF** — blocks HTTP and headless browsers. Returns empty HTML or "Request unsuccessful" error.
+- **Use department subdomains instead**:
+  - College of Business: `www.cb.cityu.edu.hk/postgrad/`
+  - MBA: `mba.cb.cityu.edu.hk/`
+  - Other departments: `www.ee.cityu.edu.hk/`, `www.cs.cityu.edu.hk/`, etc.
+- **Apply page**: `www.cb.cityu.edu.hk/postgrad/?category=Apply`
+- **Programme list**: `www.cb.cityu.edu.hk/postgrad/?category=Programme`
+- **Search tips**: Use "CityU" or "City University Hong Kong". Search for specific departments/programs rather than the central portal.
 
 #### University of Hong Kong (HKU / 香港大学)
 - **Graduate school**: `www.gradsch.hku.hk/`

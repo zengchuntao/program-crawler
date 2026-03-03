@@ -6,17 +6,20 @@ hong_kong:
   cityu:
     aliases: ["City University of Hong Kong", "CityU", "香港城市大学"]
     entry_points:
-      - url: https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/list
-        label: Program list (all taught postgraduate)
-      - url: https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/apply-now
-        label: Application deadlines
       - url: https://www.cb.cityu.edu.hk/postgrad/
         label: College of Business postgraduate
+      - url: https://www.cb.cityu.edu.hk/postgrad/?category=Apply
+        label: Application info and deadlines
       - url: https://mba.cb.cityu.edu.hk/admissions/online-application
         label: MBA admissions
-      - url: https://www.cityu.edu.hk/pg/taught-postgraduate-programmes/faq
-        label: FAQ
-    notes: Department sites (cb.cityu.edu.hk) work better than main portal for HTTP.
+      - url: https://www.cb.cityu.edu.hk/postgrad/?category=Programme
+        label: Programme list
+      - url: https://mba.cb.cityu.edu.hk/en/full-time-mba/admissions-requirements-tuition-and-scholarships
+        label: MBA tuition and requirements
+    notes: >
+      Main site www.cityu.edu.hk/pg/ uses Incapsula WAF — blocks both HTTP
+      and headless browsers. Use department subdomains instead
+      (cb.cityu.edu.hk, mba.cb.cityu.edu.hk work fine).
 
   hku:
     aliases: ["University of Hong Kong", "HKU", "香港大学", "港大"]
