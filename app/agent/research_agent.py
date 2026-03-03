@@ -6,6 +6,10 @@ import logging
 import re
 import time
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.log.run_tracker import RunTracker
 
 from app.agent.action_picker import pick_action
 from app.agent.evaluator import evaluate_page
@@ -36,6 +40,7 @@ async def run_research(
     llm: BaseLLM,
     tools: ToolRegistry,
     out_base: str = "out",
+    tracker: "RunTracker | None" = None,
 ) -> ResearchResult:
     """
     Main research agent loop.
@@ -82,6 +87,8 @@ async def run_research(
 
     # --- Agent Loop ---
     while memory.has_budget():
+        step_start = time.time()
+        prev_findings_count = len(memory.findings)
         memory.step_count += 1
         step_num = memory.step_count
 
@@ -319,6 +326,8 @@ async def run_research(
                 record_visit(
                     memory, url, had_relevant_info=False
                 )
+                if tracker:
+                    tracker.record_error(step=step_num, error=e)
 
         # --- DONE ---
         elif action.action_type == ActionType.DONE:
@@ -334,6 +343,14 @@ async def run_research(
             break
 
         agent_log.append(log_step)
+        if tracker:
+            tracker.record_step(
+                step=step_num,
+                action=action.action_type.value,
+                url_or_query=action.url or action.search_query or "",
+                duration_s=time.time() - step_start,
+                findings_added=len(memory.findings) - prev_findings_count,
+            )
         prune_memory(memory)
 
     # --- Build result ---
