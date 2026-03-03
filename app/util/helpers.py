@@ -6,17 +6,10 @@ from pathlib import Path
 from contracts.models import RunLogEntry
 
 
-def setup_logging(level: str = "INFO") -> logging.Logger:
-    logger = logging.getLogger("crawler")
-    logger.setLevel(getattr(logging, level.upper(), logging.INFO))
-    if not logger.handlers:
-        handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter(
-            "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        ))
-        logger.addHandler(handler)
-    return logger
+def setup_logging(level: str = "INFO", **kwargs) -> logging.Logger:
+    """Delegate to app.log.config.setup_logging (backward-compatible)."""
+    from app.log.config import setup_logging as _setup
+    return _setup(level=level, **kwargs)
 
 
 def out_dir(base: str | Path = "out") -> Path:

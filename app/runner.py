@@ -34,17 +34,26 @@ async def run_research_mode(
     """Run the AI research agent on a natural language query."""
     from app.agent.research_agent import run_research
     from app.llm.gemini_client import GeminiClient
+    from app.log import LoggedLLM, RunTracker
     from app.tools.registry import create_default_registry
 
-    logger = setup_logging()
     base = out_dir(out_base)
+    logger = setup_logging(log_dir=base / "logs")
+    run_dir = getattr(logger, "run_dir", None)
+
+    # Init tracker
+    tracker = RunTracker()
+    tracker.query = query
+    tracker.model = model
+    tracker.max_steps = max_steps
 
     # Init LLM
     if not api_key:
         print("Error: GEMINI_API_KEY not set.")
         sys.exit(1)
 
-    llm = GeminiClient(api_key=api_key, model=model)
+    raw_llm = GeminiClient(api_key=api_key, model=model)
+    llm = LoggedLLM(raw_llm, tracker)
     tools = create_default_registry()
 
     rq = ResearchQuery(raw_query=query, max_steps=max_steps)
@@ -55,7 +64,13 @@ async def run_research_mode(
 
     result = await run_research(
         rq, llm=llm, tools=tools, out_base=str(base),
+        tracker=tracker,
     )
+
+    # Finalize tracker
+    if run_dir:
+        tracker.finalize(run_dir)
+        logger.info("Run logs saved to %s", run_dir)
 
     # Export
     exporter = ResearchExporter()
