@@ -269,39 +269,40 @@ async def run_research(
                 # Process findings + screenshot evidence
                 if findings:
                     log_step.found_info = True
+
+                    # Take ONE screenshot per URL (not per finding)
+                    shot_file = None
                     screenshot_tool = tools.get("screenshot")
+                    if screenshot_tool:
+                        shot_path = str(
+                            ev_dir / f"page_{step_num}_full.png"
+                        )
+                        shot_result = (
+                            await screenshot_tool.execute(
+                                url=url,
+                                save_path=shot_path,
+                            )
+                        )
+                        if shot_result.success:
+                            shot_file = shot_path
 
                     for finding in findings:
                         finding.source_url = url
-                        shot_file = str(
-                            ev_dir
-                            / f"{finding.finding_id}_full.png"
-                        )
-
-                        if screenshot_tool:
-                            shot_result = (
-                                await screenshot_tool.execute(
-                                    url=url,
-                                    save_path=shot_file,
-                                )
+                        if shot_file:
+                            finding.screenshot_file = shot_file
+                            ev = EvidenceItem(
+                                evidence_id=(
+                                    generate_evidence_id()
+                                ),
+                                program_id="agent",
+                                field=finding.field_name,
+                                source_url=url,
+                                screenshot_files=[shot_file],
                             )
-                            if shot_result.success:
-                                finding.screenshot_file = (
-                                    shot_file
-                                )
-                                ev = EvidenceItem(
-                                    evidence_id=(
-                                        generate_evidence_id()
-                                    ),
-                                    program_id="agent",
-                                    field=finding.field_name,
-                                    source_url=url,
-                                    screenshot_files=[shot_file],
-                                )
-                                finding.evidence_id = (
-                                    ev.evidence_id
-                                )
-                                evidence_items.append(ev)
+                            finding.evidence_id = (
+                                ev.evidence_id
+                            )
+                            evidence_items.append(ev)
 
                     add_findings(memory, findings)
 

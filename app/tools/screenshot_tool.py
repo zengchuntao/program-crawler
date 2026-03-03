@@ -42,12 +42,16 @@ class ScreenshotTool(BaseTool):
                 page = await browser.new_page(
                     viewport={"width": 1280, "height": 900}
                 )
-                await page.goto(
-                    url,
-                    wait_until="domcontentloaded",
-                    timeout=30000,
-                )
-                await page.wait_for_timeout(1500)
+                try:
+                    await page.goto(
+                        url,
+                        wait_until="load",
+                        timeout=15000,
+                    )
+                except Exception:
+                    # Timeout is OK — take screenshot anyway
+                    pass
+                await page.wait_for_timeout(1000)
                 await page.screenshot(
                     path=save_path, full_page=True
                 )

@@ -307,11 +307,26 @@ class AgentMemory(BaseModel):
     max_steps: int = 20
 
     def fields_still_needed(self) -> list[str]:
-        """Return field names not yet found for any entity."""
+        """Return field names not yet found across ALL entities.
+
+        A field is considered "done" only if it has been found for
+        at least half of the target entities (or at least 1 if
+        there is only 1 entity). This prevents the agent from
+        stopping after filling fields for just one entity.
+        """
         if not self.goals:
             return []
-        found = {f.field_name for f in self.findings}
-        return [f for f in self.goals.fields_requested if f not in found]
+        num_entities = max(len(self.goals.target_entities), 1)
+        threshold = max(num_entities // 2, 1)
+        needed = []
+        for field in self.goals.fields_requested:
+            count = sum(
+                1 for f in self.findings
+                if f.field_name == field
+            )
+            if count < threshold:
+                needed.append(field)
+        return needed
 
     def visited_urls(self) -> set[str]:
         """Return set of all visited URLs."""
